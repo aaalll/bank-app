@@ -1,0 +1,29 @@
+.line {
+  width: 100%;
+  text-align: left;
+}
+
+.title {
+  width: 15%;
+  min-width: 100px;
+  display: inline-flex;
+}
+.mat-radio-button {
+  margin-right: 10px;
+}
+.mat-form-field-infix{
+  width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .line {
+    text-align: center;
+  }
+  .title {
+    width: 100%;
+    display: inline-block;
+  }
+  .mat-form-field {
+    width: 100%;
+  }
+}

@@ -1,0 +1,166 @@
+<div style="text-align:left; width: 100%; height: 40px;">
+  <h1>
+    <app-breadcrumb></app-breadcrumb>
+  </h1>
+</div>
+<form [formGroup]="bankForm">
+  <mat-card>
+    <mat-card-content>
+
+      <mat-tab-group mat-align-tabs="start" [selectedIndex]="tabIndex" (selectedTabChange)="onTabChanged($event);">
+        <mat-tab label="General Info">
+          <div class="line">
+            <mat-label class="title">Bank Code</mat-label>
+            <mat-form-field appearance="outline">
+              <mat-label class="title">Bank Code</mat-label>
+              <input matInput type="text" required formControlName="bankCode" placeholder="Bank Code" name="" value="">
+              <mat-error *ngIf="bankForm['controls'].bankCode.invalid">{{getBankCodeErrorMessage()}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="line">
+            <mat-label class="title">Bank Name</mat-label>
+            <mat-form-field appearance="outline">
+              <mat-label class="title">Bank Name</mat-label>
+              <input matInput type="text" required formControlName="bankName" placeholder="Bank Code" name="" value="">
+              <mat-error *ngIf="bankForm['controls'].bankName.invalid">{{getBankNameErrorMessage()}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="line">
+            <mat-label class="title">Bank URL</mat-label>
+            <mat-form-field appearance="outline">
+              <mat-label class="title">Bank URL</mat-label>
+              <input matInput type="text" required formControlName="bankURL" placeholder="Bank URL" name="" value="">
+              <mat-error *ngIf="bankForm['controls'].bankURL.invalid">{{getBankURLErrorMessage()}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="line">
+            <mat-label class="title">Country</mat-label>
+            <mat-form-field appearance="outline">
+              <mat-label class="title">Country</mat-label>
+              <mat-select placeholder="Country" formControlName="country" name="country" required>
+                <mat-option [value]="country.id" *ngFor="let country of countries">{{country.name}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="bankForm['controls'].country.invalid">{{getCountryErrorMessage()}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="line">
+            <mat-label class="title">Schemes</mat-label>
+            <mat-form-field appearance="outline">
+              <mat-label class="title">Schemes</mat-label>
+              <mat-select placeholder="Schemes" formControlName="cardSchemes" name="cardSchemes" required multiple
+                (selectionChange)="onChangeCardSchemes($event.value)">
+                <mat-option [value]="cardScheme.id" *ngFor="let cardScheme of cardSchemes">{{cardScheme.type}}
+                </mat-option>
+
+                <!-- <mat-option value="1">Visa</mat-option>
+                <mat-option value="2">MasterCard</mat-option>
+                <mat-option value="3">JCB</mat-option> -->
+              </mat-select>
+              <mat-error *ngIf="bankForm['controls'].cardSchemes.invalid">{{getCardSchemesErrorMessage()}}</mat-error>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+        <mat-tab label="Contact" [disabled]="tabValid(0)">
+          <div class="line">
+            <mat-label class="title">Contact Name</mat-label>
+            <mat-form-field appearance="outline">
+              <mat-label class="title">Name</mat-label>
+              <input matInput type="text" required formControlName="contactName" placeholder="Contact Name" name=""
+                value="">
+              <mat-error *ngIf="bankForm['controls'].contactName.invalid">{{getContactNameErrorMessage()}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="line">
+            <mat-label class="title">Contact Email</mat-label>
+            <mat-form-field appearance="outline">
+              <mat-label class="title">Email</mat-label>
+              <input matInput type="text" required formControlName="contactEmail" placeholder="Contact Email" name=""
+                value="">
+              <mat-error *ngIf="bankForm['controls'].contactEmail.invalid">{{getContactEmailErrorMessage()}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="line">
+            <mat-label class="title">Contact Number</mat-label>
+            <mat-form-field appearance="outline">
+              <mat-label class="title">Number</mat-label>
+              <input matInput type="text" formControlName="contactNumber" placeholder="Contact Number" name="" value=""
+                (change)="setValidCheck()">
+              <mat-error *ngIf="bankForm['controls'].contactNumber.invalid">{{getContactNumberErrorMessage()}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="line">
+            <mat-label id="radio-group-1" class="title">Contact Number</mat-label>
+            <mat-form-field appearance="outline">
+              <input matInput placeholder="Input" style="display: none">
+              <mat-radio-group aria-label="radio-group-1" required formControlName="contactPreferredMethod"
+                [(ngModel)]="preferredMethod">
+                <mat-radio-button value="1" checked="true">Email</mat-radio-button>
+                <mat-radio-button value="2"
+                  [disabled]="bankForm['controls'].contactNumber.invalid||bankForm['controls'].contactNumber.value.length<1">
+                  Phone</mat-radio-button>
+              </mat-radio-group>
+              <mat-error *ngIf="bankForm['controls'].contactPreferredMethod.invalid">
+                {{getContactPreferredMethodErrorMessage()}}</mat-error>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+        <mat-tab label="Billing" [disabled]="tabValid(0)||tabValid(1)">
+          <div class="line">
+            <mat-label class="title">Choose a date</mat-label>
+            <mat-form-field appearance="outline">
+              <mat-label>Choose a date</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="billingStartDate">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="bankForm['controls'].billingStartDate.invalid">{{getBillingStartDateErrorMessage()}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="line">
+            <mat-label class="title">Billing Period</mat-label>
+            <mat-form-field appearance="outline" style="min-width: 320px;">
+              <input matInput placeholder="Input" style="display: none">
+              <mat-radio-group aria-label="Billing Period" required formControlName="billingPeriod" name="" value="">
+                <mat-radio-button value="1" [checked]="bankForm['controls'].billingPeriod.value == '1'"
+                  [disabled]="bankForm['controls'].cardSchemes.value.indexOf(1)>-1||bankForm['controls'].cardSchemes.value.indexOf(2)>-1">
+                  Monthly</mat-radio-button>
+                <mat-radio-button value="2" [checked]="bankForm['controls'].billingPeriod.value == '2'"
+                  [disabled]="bankForm['controls'].cardSchemes.value.indexOf(2)>-1">
+                  Quarterly</mat-radio-button>
+                <mat-radio-button value="3" [checked]="bankForm['controls'].billingPeriod.value == '3'">Annually
+                </mat-radio-button>
+              </mat-radio-group>
+              <mat-error *ngIf="bankForm['controls'].billingPeriod.invalid">{{getContactPreferredMethodErrorMessage()}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="line">
+            <mat-label class="title">Contact Email</mat-label>
+            <mat-form-field appearance="outline">
+              <mat-label class="title">Email</mat-label>
+              <input matInput type="text" [readonly]="bankForm['controls'].billingSameEmail.value" required
+                formControlName="billingEmail" placeholder="Contact Email" name="" value="">
+              <mat-error *ngIf="bankForm['controls'].billingEmail.invalid">{{getContactEmailErrorMessage()}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="line">
+            <mat-label class="title"> </mat-label>
+            <mat-checkbox formControlName="billingSameEmail" (change)="checkBillingSameEmail($event)">Same as contact
+              email</mat-checkbox>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" (click)="back()" *ngIf="tabIndex>0"
+        [disabled]="tabIndex==0">Previous</button>
+      <div style="flex: 1 1 auto;"></div>
+      <button *ngIf="tabIndex<2" mat-raised-button color="primary" (click)="next()"
+        [disabled]="tabValid(tabIndex)">Next</button>
+      <button *ngIf="tabIndex===2" [disabled]="!bankForm.valid" (click)="save()" mat-raised-button
+        color="primary">Save</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
